@@ -38,7 +38,7 @@ const MarketingPage = () => {
         size="lg"
         asChild
       >
-        <Link href="/">Use Tune Tasks for Free!</Link>
+        <Link href="/sign-up">Use Tune Tasks for Free!</Link>
       </Button>
     </div>
   );
