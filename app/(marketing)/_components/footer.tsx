@@ -14,7 +14,12 @@ export const Footer = () => {
           >
             Privacy Policy
           </Button>
-          <p className="text-black-100">© Tune Tasks 2024</p>
+          <div>
+            <p className="text-black-100 font-light">© Tune Tasks 2024</p>
+            <p className="text-black-100 text-sm font-light">
+              Powered By Harkinta
+            </p>
+          </div>
           <Button
             className="hover:opacity-50 transition"
             size="sm"
