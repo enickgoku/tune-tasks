@@ -76,6 +76,9 @@ const config = {
         mont: ['Montserrat', 'sans-serif'],
         poppins: ['Poppins', 'sans-serif'],
       },
+      backgroundImage: {
+        'landing-page': 'url(/bg-for-landing-page.png)',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
