@@ -5,10 +5,11 @@ import { Plus } from 'lucide-react';
 import { useLocalStorage } from 'usehooks-ts';
 import { useOrganization, useOrganizationList } from '@clerk/nextjs';
 
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Accordion } from '@/components/ui/accordion';
+
 import { NavItem, Organization } from './nav-item';
 
 interface SidebarProps {
@@ -23,7 +24,6 @@ export const Sidebar = ({ storageKey = 't-sidebar-state' }: SidebarProps) => {
 
   const { organization: activeOrganization, isLoaded: isLoadedOrg } =
     useOrganization();
-
   const { userMemberships, isLoaded: isLoadedOrgList } = useOrganizationList({
     userMemberships: {
       infinite: true,
@@ -35,31 +35,30 @@ export const Sidebar = ({ storageKey = 't-sidebar-state' }: SidebarProps) => {
       if (expanded[key]) {
         acc.push(key);
       }
+
       return acc;
     },
     []
   );
 
   const onExpand = (id: string) => {
-    setExpanded((curr) => {
-      return {
-        ...curr,
-        [id]: !expanded[id],
-      };
-    });
+    setExpanded((curr) => ({
+      ...curr,
+      [id]: !expanded[id],
+    }));
   };
 
   if (!isLoadedOrg || !isLoadedOrgList || userMemberships.isLoading) {
     return (
-      <div className="w-64">
-        <Skeleton />
-      </div>
+      <>
+        <div>Loading</div>
+      </>
     );
   }
 
   return (
     <>
-      <div className="font-mont text-sm flex items-center mb-1">
+      <div className="font-medium text-xs flex items-center mb-1">
         <span className="pl-4">Workspaces</span>
         <Button
           asChild

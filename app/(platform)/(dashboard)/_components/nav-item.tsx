@@ -1,8 +1,17 @@
 'use client';
 
+import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 
-import { AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Activity, CreditCard, Layout, Settings } from 'lucide-react';
+
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+
 import { cn } from '@/lib/utils';
 
 export type Organization = {
@@ -25,6 +34,36 @@ export const NavItem = ({
   organization,
   onExpand,
 }: NavItemProps) => {
+  const router = useRouter();
+  const pathName = usePathname();
+
+  const routes = [
+    {
+      label: 'Boards',
+      icon: <Layout className="h-4 w-4 mr-2" />,
+      href: `/organization/${organization.id}`,
+    },
+    {
+      label: 'Activity',
+      icon: <Activity className="h-4 w-4 mr-2" />,
+      href: `/organization/${organization.id}/activity`,
+    },
+    {
+      label: 'Settings',
+      icon: <Settings className="h-4 w-4 mr-2" />,
+      href: `/organization/${organization.id}/settings`,
+    },
+    {
+      label: 'Billing',
+      icon: <CreditCard className="h-4 w-4 mr-2" />,
+      href: `/organization/${organization.id}/billing`,
+    },
+  ];
+
+  const onClick = (href: string) => {
+    router.push(href);
+  };
+
   return (
     <AccordionItem value={organization.id} className="border-none">
       <AccordionTrigger
@@ -43,9 +82,26 @@ export const NavItem = ({
               className="rounded-sm object-cover"
             />
           </div>
-          <span className="font-mont ml-2">{organization.name}</span>
+          <span className="font-mont text-sm ml-2">{organization.name}</span>
         </div>
       </AccordionTrigger>
+      <AccordionContent className="pt-1 text-black">
+        {routes.map((route) => (
+          <Button
+            variant="secondary"
+            size="sm"
+            key={route.href}
+            onClick={() => onClick(route.href)}
+            className={cn(
+              'w-full font-mont justify-start pl-10 mb-1',
+              pathName === route.href && 'bg-rose-500/40 text-black'
+            )}
+          >
+            {route.icon}
+            {route.label}
+          </Button>
+        ))}
+      </AccordionContent>
     </AccordionItem>
   );
 };
