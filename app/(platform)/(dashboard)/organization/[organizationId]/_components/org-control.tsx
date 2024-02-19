@@ -7,6 +7,8 @@ import { useOrganizationList } from '@clerk/nextjs';
 // If you manually change the organization
 // in the URL, the OrgControl component
 // will update the active organization in the Clerk context.
+// Additionally, it will update the active organization if params change
+// from a different source such as a button click in the sidebar.
 
 export const OrgControl = () => {
   const params = useParams();
