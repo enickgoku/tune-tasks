@@ -10,5 +10,5 @@ export const deleteBoard = async (id: string) => {
     },
   });
 
-  revalidatePath('/organization/:organizationId');
+  revalidatePath('/organization/org_2cSo2dWZ4AVE1scnoF6fGVjgsFC');
 };
