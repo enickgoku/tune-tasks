@@ -20,7 +20,7 @@ interface FormSubmitProps {
     | undefined;
 }
 
-export const FormButton = ({
+export const FormSubmit = ({
   children,
   disabled,
   className,
