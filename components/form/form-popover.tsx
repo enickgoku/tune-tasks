@@ -15,6 +15,9 @@ import { createBoard } from '@/actions/create-board';
 import { FormInput } from './form-input';
 import { FormSubmit } from './form-submit';
 import { X } from 'lucide-react';
+import { FormPicker } from './form-picker';
+import { ElementRef, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface FormPopoverProps {
   children: React.ReactNode;
@@ -29,10 +32,15 @@ export const FormPopover = ({
   align,
   sideOffset = 0,
 }: FormPopoverProps) => {
+  const closeRef = useRef<ElementRef<'button'>>(null);
+  const router = useRouter();
+
   const { execute, fieldErrors } = useAction(createBoard, {
     onSuccess: (data) => {
       console.log({ data });
       toast.success('Board created');
+      closeRef.current?.click();
+      router.push(`/board/${data.id}`);
     },
     onError: (error) => {
       console.log({ error });
@@ -42,8 +50,9 @@ export const FormPopover = ({
 
   const onSubmit = (formData: FormData) => {
     const title = formData.get('title') as string;
+    const image = formData.get('image') as string;
 
-    execute({ title });
+    execute({ title, image });
   };
 
   return (
@@ -58,7 +67,7 @@ export const FormPopover = ({
         <div className="flex items-center justify-center text-sm font-medium text-neutral-500 pb-4">
           Create a new board.
         </div>
-        <PopoverClose asChild>
+        <PopoverClose asChild ref={closeRef}>
           <Button
             className="w-auto h-auto p-2 absolute top-2 right-2 text-neutral-600"
             variant="ghost"
@@ -68,6 +77,7 @@ export const FormPopover = ({
         </PopoverClose>
         <form className="space-y-4" action={onSubmit}>
           <div className="space-y-4">
+            <FormPicker id="image" errors={fieldErrors} />
             <FormInput
               id="title"
               label="Board Title"
