@@ -25,7 +25,6 @@ model List {
   id        String   @id @default(uuid())
   boardId   String
   title     String
-  position  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt 
   order     Int

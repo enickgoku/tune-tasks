@@ -5,7 +5,7 @@ import { InputType, ReturnType } from './types';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { createSafeAction } from '@/lib/create-safe-action';
-import { updateBoardSchema } from './schema';
+import { createListSchema } from './schema';
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { userId, orgId } = auth();
@@ -14,18 +14,37 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     throw new Error('Unauthorized');
   }
 
-  const { title, id } = data;
+  const { title, boardId } = data;
 
-  let board;
+  let list;
 
   try {
-    board = await db.board.update({
+    const board = await db.board.findUnique({
       where: {
-        id,
+        id: boardId,
         orgId,
       },
+    });
+
+    if (!board) {
+      return {
+        error: 'Board not found.',
+      };
+    }
+
+    const lastList = await db.list.findFirst({
+      where: { boardId: boardId },
+      orderBy: { order: 'desc' },
+      select: { order: true },
+    });
+
+    const newOrder = lastList ? lastList.order + 1 : 1;
+
+    list = await db.list.create({
       data: {
         title,
+        boardId,
+        order: newOrder,
       },
     });
   } catch (error) {
@@ -34,8 +53,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     };
   }
 
-  revalidatePath(`/board/${id}`);
-  return { data: board };
+  revalidatePath(`/board/${boardId}`);
+  return { data: list };
 };
 
-export const updateBoard = createSafeAction(updateBoardSchema, handler);
+export const createList = createSafeAction(createListSchema, handler);
