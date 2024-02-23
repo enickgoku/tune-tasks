@@ -30,7 +30,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     });
   } catch (error) {
     return {
-      error: 'Failed to delete the board.',
+      error: 'Failed to delete the list.',
     };
   }
   revalidatePath(`/board/${boardId}`);

@@ -4,6 +4,7 @@ import { List } from '@prisma/client';
 
 import { useAction } from '@/hooks/use-action';
 import { deleteList } from '@/actions/delete-list';
+import { copyList } from '@/actions/copy-list';
 
 import {
   Popover,
@@ -17,7 +18,6 @@ import { FormSubmit } from '@/components/form/form-submit';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { ElementRef, useRef } from 'react';
-import { close } from 'inspector';
 
 interface ListOptionsProps {
   list: List;
@@ -37,11 +37,27 @@ export const ListOptions = ({ list, onAddCard }: ListOptionsProps) => {
     },
   });
 
+  const { execute: executeCopy } = useAction(copyList, {
+    onSuccess: (list) => {
+      toast.success(`Copied the ${list.title} list.`);
+      closeRef.current?.click();
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
   const onDelete = (formData: FormData) => {
     const id = formData.get('id') as string;
     const boardId = formData.get('boardId') as string;
 
     executeDelete({ id, boardId });
+  };
+  const onCopy = (formData: FormData) => {
+    const id = formData.get('id') as string;
+    const boardId = formData.get('boardId') as string;
+
+    executeCopy({ id, boardId });
   };
 
   return (
@@ -70,7 +86,7 @@ export const ListOptions = ({ list, onAddCard }: ListOptionsProps) => {
         >
           Add Card...
         </Button>
-        <form>
+        <form action={onCopy}>
           <input hidden name="id" id="id" value={list.id} />
           <input hidden name="boardId" id="boardId" value={list.boardId} />
           <FormSubmit
