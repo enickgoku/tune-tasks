@@ -7,11 +7,12 @@ import { FormSubmit } from '@/components/form/form-submit';
 
 import { useAction } from '@/hooks/use-action';
 import { createList } from '@/actions/create-list';
-import { Plus, X } from 'lucide-react';
 import { useState, useRef, ElementRef } from 'react';
 import { useEventListener, useOnClickOutside } from 'usehooks-ts';
 import { useParams, useRouter } from 'next/navigation';
+
 import { toast } from 'sonner';
+import { Plus, X } from 'lucide-react';
 
 export const ListForm = () => {
   const router = useRouter();
