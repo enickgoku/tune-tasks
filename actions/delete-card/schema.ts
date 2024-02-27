@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const copyCardSchema = z.object({
+export const deleteCardSchema = z.object({
   id: z.string(),
   boardId: z.string(),
 });

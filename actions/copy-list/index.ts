@@ -34,7 +34,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
 
     if (!listToCopy) {
       return {
-        error: 'List nof found.',
+        error: 'List not found.',
       };
     }
 
