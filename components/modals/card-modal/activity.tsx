@@ -3,6 +3,9 @@
 import { AuditLog } from '@prisma/client';
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { ActivityItem } from '@/components/activity-item';
+
+import { ActivityIcon } from 'lucide-react';
 
 interface ActivityProps {
   logs: AuditLog[];
@@ -10,8 +13,16 @@ interface ActivityProps {
 
 export const Activity = ({ logs }: ActivityProps) => {
   return (
-    <div>
-      <h1>Activity</h1>
+    <div className="flex items-start gap-x-3 w-full">
+      <ActivityIcon className="h-6 w-6 mt-0.5 text-neutral-700" />
+      <div className="w-full">
+        <p className="font-semibold text-neutral-700 mb-2">Activity</p>
+        <ol className="mt-2 space-y-4">
+          {logs.map((log) => (
+            <ActivityItem key={log.id} log={log} />
+          ))}
+        </ol>
+      </div>
     </div>
   );
 };
