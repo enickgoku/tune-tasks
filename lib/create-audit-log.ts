@@ -4,10 +4,12 @@ import { ACTION, ENTITY_TYPE } from '@prisma/client';
 import { db } from './db';
 
 interface Props {
+  userId: string;
   entityId: string;
   entityType: ENTITY_TYPE;
   entityTitle: string;
   action: ACTION;
+  assignedUserId?: string;
 }
 
 export const createAuditLog = async (props: Props) => {

@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Boards
+
 model Board {
   id            String     @id @default(uuid())
   orgId         String
@@ -21,6 +23,8 @@ model Board {
   lists         List[]
 }
 
+// Lists
+
 model List {
   id        String   @id @default(uuid())
   boardId   String
@@ -33,22 +37,39 @@ model List {
   @@index([boardId])
 }
 
+// Cards
+
 model Card {
   id          String   @id @default(uuid())
   title       String
   order       Int
   description String?  @db.Text
   listId      String
+  assignments CardAssignment[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   list        List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   @@index([listId])
 }
 
+model CardAssignment {
+  id String @id @default(uuid())
+  cardId String?
+  userId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  card Card? @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  @@index([cardId])
+  @@index([userId])
+}
+
+// ENUMS
+
 enum ACTION {
   CREATE
   UPDATE
   DELETE
+  ASSIGN
 }
 
 enum ENTITY_TYPE {
@@ -56,6 +77,8 @@ enum ENTITY_TYPE {
   LIST
   CARD
 }
+
+// Audit Logs
 
 model AuditLog {
   id          String   @id @default(uuid())
@@ -67,9 +90,12 @@ model AuditLog {
   userId      String
   userImage   String   @db.Text
   userName    String   @db.Text
+  assignedUserId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// Org Tables
 
 model OrgLimit {
   id        String   @id @default(uuid())
