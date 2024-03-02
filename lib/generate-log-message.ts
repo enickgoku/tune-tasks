@@ -1,7 +1,11 @@
+import { LogUserData } from '@/types';
 import { ACTION, AuditLog } from '@prisma/client';
 
-export const generateLogMessage = (log: AuditLog) => {
+export const generateLogMessage = (log: AuditLog, users: LogUserData[]) => {
   const { action, entityTitle, entityType, userId, assignedUserId } = log;
+
+  const delegator = users.find((user) => user.userId === userId);
+  const assignedUser = users.find((user) => user.userId === assignedUserId);
 
   switch (action) {
     case ACTION.CREATE:
@@ -11,7 +15,7 @@ export const generateLogMessage = (log: AuditLog) => {
     case ACTION.DELETE:
       return `Deleted ${entityType.toLowerCase()} "${entityTitle}"`;
     case ACTION.ASSIGN:
-      return `Assigned ${entityType.toLowerCase()} "${entityTitle}" to ${assignedUserId}`;
+      return `${delegator?.firstName} assigned ${assignedUser?.firstName} to this card.`;
     default:
       return `Performed an action on ${entityType.toLowerCase()} "${entityTitle}"`;
   }

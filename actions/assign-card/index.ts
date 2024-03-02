@@ -31,6 +31,8 @@ const handler = async (data: InputType): Promise<ReturnType> => {
       data: {
         cardId,
         userId: assignedUserId,
+        delegatorId: authUserId,
+        boardId,
       },
     });
 

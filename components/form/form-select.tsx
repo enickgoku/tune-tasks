@@ -53,6 +53,7 @@ export const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
             )}
             aria-describedby={`${id}-error`}
           >
+            <option value="">Select a user</option>
             {options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}

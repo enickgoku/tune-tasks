@@ -5,12 +5,21 @@ import { AuditLog } from '@prisma/client';
 
 import { generateLogMessage } from '@/lib/generate-log-message';
 import { Avatar, AvatarImage } from './ui/avatar';
+import { useOrganization } from '@clerk/nextjs';
 
 interface ActivityItemProps {
   log: AuditLog;
 }
 
 export const ActivityItem = ({ log }: ActivityItemProps) => {
+  const organization = useOrganization({
+    memberships: true,
+  });
+
+  const users = organization.memberships?.data?.map(
+    (user) => user.publicUserData
+  );
+
   return (
     <li className="flex items-center gap-x-2">
       <Avatar className="h-7 w-7">
@@ -21,7 +30,7 @@ export const ActivityItem = ({ log }: ActivityItemProps) => {
           <span className="font-mont lowercase text-neutral-700">
             {log.userName}
           </span>{' '}
-          {generateLogMessage(log)}
+          {generateLogMessage(log, users || [])}
         </p>
         <p className="text-xs text-muted-foreground">
           {format(new Date(log.createdAt), "MMMM d, yyyy 'at' h:mm a")}

@@ -56,6 +56,8 @@ model CardAssignment {
   id String @id @default(uuid())
   cardId String?
   userId String?
+  delegatorId String?
+  boardId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   card Card? @relation(fields: [cardId], references: [id], onDelete: Cascade)
