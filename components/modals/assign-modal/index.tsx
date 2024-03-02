@@ -2,27 +2,18 @@
 
 import { useAssignCardModal } from '@/hooks/use-assign-card-modal';
 import { useOrgUsers } from '@/hooks/use-org-users';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-  SelectItem,
-} from '@/components/ui/select';
 import { Tag } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FormSubmit } from '@/components/form/form-submit';
+import { FormSelect } from '@/components/form/form-select';
 
 import { fetcher } from '@/lib/fetcher';
 import { CardWithList } from '@/types';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 import { ElementRef, useRef } from 'react';
-import { FormSelect } from '@/components/form/form-select';
 
 export const AssignCardModal = () => {
   const params = useParams();
@@ -78,13 +69,12 @@ export const AssignCardModal = () => {
             className="flex flex-col items-center justify-center"
           >
             <FormSelect
-              id="firstName" // Ensure ID matches the htmlFor of any associated label
+              id="firstName"
               options={options}
-              name="firstName" // Important for formData to correctly identify the select element
+              name="firstName"
               required={true}
               ref={inputRef}
               label="Select a user"
-              // Add any additional props as needed
             />
             <FormSubmit className="mt-10">Assign</FormSubmit>
           </form>
