@@ -7,10 +7,11 @@ import { deleteCard } from '@/actions/delete-card';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Copy, Trash } from 'lucide-react';
+import { Copy, Trash, UserRoundSearch } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useCardModal } from '@/hooks/use-card-modal';
 import { toast } from 'sonner';
+import { useAssignCardModal } from '@/hooks/use-assign-card-modal';
 
 interface ActionsProps {
   card: CardWithList;
@@ -19,6 +20,7 @@ interface ActionsProps {
 export const Actions = ({ card }: ActionsProps) => {
   const params = useParams();
   const cardModal = useCardModal();
+  const assignCardModel = useAssignCardModal();
 
   const { execute: copyCardExecute, isLoading: isLoadingCopy } = useAction(
     copyCard,
@@ -75,6 +77,16 @@ export const Actions = ({ card }: ActionsProps) => {
       >
         <Copy className="h-4 w-4 mr-2" />
         Copy
+      </Button>
+      <Button
+        disabled={isLoadingCopy}
+        variant="gray"
+        className="w-full justify-start"
+        size="inline"
+        onClick={() => assignCardModel.onOpen(card.id)}
+      >
+        <UserRoundSearch className="h-4 w-4 mr-2" />
+        Assign
       </Button>
       <Button
         disabled={isLoadingDelete}

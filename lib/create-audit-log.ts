@@ -4,7 +4,7 @@ import { ACTION, ENTITY_TYPE } from '@prisma/client';
 import { db } from './db';
 
 interface Props {
-  userId: string;
+  userId?: string;
   entityId: string;
   entityType: ENTITY_TYPE;
   entityTitle: string;
@@ -22,7 +22,7 @@ export const createAuditLog = async (props: Props) => {
       throw new Error('User not found.');
     }
 
-    const { entityId, entityType, entityTitle, action } = props;
+    const { entityId, entityType, entityTitle, action, assignedUserId } = props;
 
     await db.auditLog.create({
       data: {
@@ -32,6 +32,7 @@ export const createAuditLog = async (props: Props) => {
         entityTitle,
         action,
         userId: user.id,
+        assignedUserId: assignedUserId,
         userImage: user?.imageUrl,
         userName: user?.firstName + ' ' + user?.lastName,
       },

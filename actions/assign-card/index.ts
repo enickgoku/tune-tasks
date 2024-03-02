@@ -16,9 +16,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     throw new Error('Unauthorized');
   }
 
-  const { boardId, cardId, userId: userAssignedId } = data;
+  const { boardId, cardId, assignedUserId } = data;
 
-  if (!boardId || !cardId || !userAssignedId) {
+  if (!boardId || !cardId) {
     return {
       error: 'Missing required data',
     };
@@ -30,7 +30,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     cardAssignment = await db.cardAssignment.create({
       data: {
         cardId,
-        userId: userAssignedId,
+        userId: assignedUserId,
       },
     });
 
@@ -45,10 +45,12 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
 
     await createAuditLog({
+      userId: authUserId,
       entityId: cardId,
       entityTitle: currentCard?.title,
       entityType: ENTITY_TYPE.CARD,
       action: ACTION.ASSIGN,
+      assignedUserId,
     });
   } catch (error) {
     return {
