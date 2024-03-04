@@ -8,6 +8,7 @@ import { useAction } from '@/hooks/use-action';
 import { updateList } from '@/actions/update-list';
 import { toast } from 'sonner';
 import { ListOptions } from './list-options';
+import { hexToRGBA } from '@/lib/hex-to-rgba';
 
 interface ListHeaderProps {
   list: List;
@@ -19,6 +20,7 @@ export const ListHeader = ({ list, onAddCard }: ListHeaderProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const formRef = useRef<ElementRef<'form'>>(null);
   const inputRef = useRef<ElementRef<'input'>>(null);
+  const [headerColor, setHeaderColor] = useState('');
 
   const enableEditing = () => {
     setIsEditing(true);
@@ -68,7 +70,10 @@ export const ListHeader = ({ list, onAddCard }: ListHeaderProps) => {
   useEventListener('keydown', onKeyDown);
 
   return (
-    <div className="pt-2 px-2 text-sm font-mont flex justify-between items-start gap-x-2">
+    <div
+      className={`pt-2 px-2 text-sm font-mont flex justify-between items-start gap-x-2 rounded-t-md mb-2`}
+      style={{ backgroundColor: hexToRGBA(headerColor, 0.5) }}
+    >
       {isEditing ? (
         <form ref={formRef} action={handleSubmit} className="flex-1 px-[2px]">
           <input hidden id="id" name="id" value={list.id} />
@@ -91,7 +96,12 @@ export const ListHeader = ({ list, onAddCard }: ListHeaderProps) => {
           {title}
         </div>
       )}
-      <ListOptions list={list} onAddCard={onAddCard} />
+      <ListOptions
+        list={list}
+        onAddCard={onAddCard}
+        headerColor={headerColor}
+        setHeaderColor={setHeaderColor}
+      />
     </div>
   );
 };

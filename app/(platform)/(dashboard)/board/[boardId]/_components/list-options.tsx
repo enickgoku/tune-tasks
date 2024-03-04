@@ -12,20 +12,29 @@ import {
   PopoverTrigger,
   PopoverClose,
 } from '@/components/ui/popover';
+import { ColorPicker } from './color-picker';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, X } from 'lucide-react';
 import { FormSubmit } from '@/components/form/form-submit';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
-import { ElementRef, useRef } from 'react';
+import { ElementRef, useRef, useState } from 'react';
 
 interface ListOptionsProps {
   list: List;
   onAddCard: () => void;
+  headerColor: string;
+  setHeaderColor: (color: string) => void;
 }
 
-export const ListOptions = ({ list, onAddCard }: ListOptionsProps) => {
+export const ListOptions = ({
+  list,
+  onAddCard,
+  headerColor,
+  setHeaderColor,
+}: ListOptionsProps) => {
   const closeRef = useRef<ElementRef<'button'>>(null);
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
 
   const { execute: executeDelete } = useAction(deleteList, {
     onSuccess: (list) => {
@@ -63,7 +72,7 @@ export const ListOptions = ({ list, onAddCard }: ListOptionsProps) => {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button asChild className="h-auto w-auto p-2" variant="ghost">
+        <Button asChild className="h-auto w-auto p-2 mb-3" variant="ghost">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
@@ -79,6 +88,19 @@ export const ListOptions = ({ list, onAddCard }: ListOptionsProps) => {
             <X className="h-4 w-4" />
           </Button>
         </PopoverClose>
+        <Button
+          onClick={() => setColorPickerOpen(!colorPickerOpen)}
+          className="rounded-none w-full h-auto p-2 px-5 justify-start font-normal text-sm"
+          variant="ghost"
+        >
+          Header Color...
+        </Button>
+        {colorPickerOpen && (
+          <ColorPicker
+            headerColor={headerColor}
+            setHeaderColor={setHeaderColor}
+          />
+        )}
         <Button
           onClick={onAddCard}
           className="rounded-none w-full h-auto p-2 px-5 justify-start font-normal text-sm"
