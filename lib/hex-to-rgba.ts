@@ -1,4 +1,4 @@
-export const hexToRGBA = (hex: string, opacity: number) => {
+export const hexToRGBA = (hex: string) => {
   let r = 255,
     g = 255,
     b = 255;
@@ -11,5 +11,5 @@ export const hexToRGBA = (hex: string, opacity: number) => {
     g = parseInt(hex[3] + hex[4], 16);
     b = parseInt(hex[5] + hex[6], 16);
   }
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  return `rgba(${r}, ${g}, ${b}, 0.6)`;
 };

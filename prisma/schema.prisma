@@ -34,6 +34,7 @@ model List {
   order     Int
   cards     Card[]
   board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  headerColor String? @default("rgba(255, 255, 255, 0.5)")
   @@index([boardId])
 }
 

@@ -72,7 +72,7 @@ export const ListHeader = ({ list, onAddCard }: ListHeaderProps) => {
   return (
     <div
       className={`pt-2 px-2 text-sm font-mont flex justify-between items-start gap-x-2 rounded-t-md mb-2`}
-      style={{ backgroundColor: hexToRGBA(headerColor, 0.5) }}
+      style={{ backgroundColor: list.headerColor as string }}
     >
       {isEditing ? (
         <form ref={formRef} action={handleSubmit} className="flex-1 px-[2px]">

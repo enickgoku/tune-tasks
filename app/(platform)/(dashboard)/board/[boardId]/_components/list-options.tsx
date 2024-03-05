@@ -97,6 +97,8 @@ export const ListOptions = ({
         </Button>
         {colorPickerOpen && (
           <ColorPicker
+            setColorPickerOpen={setColorPickerOpen}
+            listId={list.id}
             headerColor={headerColor}
             setHeaderColor={setHeaderColor}
           />
