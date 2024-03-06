@@ -2,16 +2,17 @@
 
 import { useQuery } from '@tanstack/react-query';
 
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useCardModal } from '@/hooks/use-card-modal';
-
-import { CardWithList } from '@/types';
 import { fetcher } from '@/lib/fetcher';
+
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { CardWithList } from '@/types';
 import { Header } from './header';
 import { Description } from './description';
 import { Actions } from './actions';
 import { AuditLog } from '@prisma/client';
 import { Activity } from './activity';
+import { Audio } from './audio';
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
@@ -48,6 +49,7 @@ export const CardModal = () => {
             </div>
           </div>
           {!cardData ? <Actions.Skeleton /> : <Actions card={cardData} />}
+          <Audio />
         </div>
       </DialogContent>
     </Dialog>
