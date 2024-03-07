@@ -14,6 +14,7 @@ interface FormInputProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
+  accept?: string;
   errors?: Record<string, string[] | undefined>;
   className?: string;
   defaultValue?: string;
@@ -56,6 +57,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             placeholder={placeholder}
             type={type}
             disabled={pending || disabled}
+            accept={type === 'file' ? 'audio/*' : undefined}
             className={cn('text-sm px-2 py-2 h-7', className)}
             aria-describedby={`${id}-error`}
           />
