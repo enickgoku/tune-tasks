@@ -1,71 +1,63 @@
 'use server';
 
-import { auth } from '@clerk/nextjs';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 import { ACTION, Audio, ENTITY_TYPE } from '@prisma/client';
 import { createAuditLog } from '@/lib/create-audit-log';
-import { supabase } from '@/lib/supabase';
-import { uniqueId } from 'lodash';
 import { ActionState } from '@/lib/create-safe-action';
+import { auth } from '@clerk/nextjs';
 
 interface InputType {
-  audio: Blob;
+  audioPath: string;
   title: string;
   cardId: string;
   boardId: string;
+  orgId: string;
 }
 
 type ReturnType = ActionState<InputType, Audio>;
 
-export const uploadToSupabase = async ({
+export const uploadToSupabaseAndPostgres = async ({
   data,
 }: {
   data: InputType;
 }): Promise<ReturnType> => {
-  const { userId, orgId } = auth();
-
-  if (!userId || !orgId) {
+  const { userId } = auth();
+  if (!userId) {
     throw new Error('Unauthorized');
   }
 
-  const { audio, title, cardId, boardId } = data;
+  const { audioPath, title, cardId, boardId, orgId } = data;
 
   let createAudioInformation;
 
   try {
-    const uniqueID = uniqueId();
+    createAudioInformation = await db.audio.create({
+      data: {
+        title,
+        url: audioPath,
+        cardId,
+        orgId,
+      },
+    });
 
-    const { data: audioData, error: audioError } = await supabase.storage
-      .from('audio')
-      .upload(`audio-${title}-${uniqueID}`, audio as Blob, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-
-    if (audioError) {
-      throw new Error('Failed to upload audio');
+    if (!createAudioInformation) {
+      throw new Error('Failed to create audio');
     }
 
     const cardForUpdate = await db.card.findUnique({
       where: {
         id: cardId,
       },
+      select: {
+        id: true,
+        title: true,
+      },
     });
 
     if (!cardForUpdate) {
       throw new Error('Card not found');
     }
-
-    createAudioInformation = await db.audio.create({
-      data: {
-        id: uniqueID,
-        title: title,
-        url: audioData.path,
-        orgId: orgId,
-        cardId: cardId,
-      },
-    });
 
     await createAuditLog({
       entityTitle: cardForUpdate.title,

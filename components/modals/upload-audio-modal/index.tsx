@@ -5,32 +5,63 @@ import { FormSubmit } from '@/components/form/form-submit';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
+import { useParams } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import { ElementRef, useRef } from 'react';
 
-import { supabase } from '@/lib/supabase';
-import { uniqueId } from 'lodash';
 import { toast } from 'sonner';
+import { uploadToSupabaseAndPostgres } from '@/actions/supabase-postgres-upload-audio';
+import { uniqueId } from 'lodash';
+import { supabase } from '@/lib/supabase';
 
 export const UploadCardModal = () => {
   const id = useAddAudioModal((state) => state.id);
   const isOpen = useAddAudioModal((state) => state.isOpen);
   const onClose = useAddAudioModal((state) => state.onClose);
+  const { orgId } = useAuth();
 
+  const params = useParams();
   const audioInputRef = useRef<ElementRef<'input'>>(null);
   const inputRef = useRef<ElementRef<'input'>>(null);
   const formRef = useRef<ElementRef<'form'>>(null);
 
   const onSubmit = async (formData: FormData) => {
-    const audio = formData.get('audio');
-    const title = formData.get('audio-title');
-
-    try {
-      // place server action here
-    } catch (error) {
-      toast.error('Failed to upload audio');
+    if (!orgId) {
+      return toast.error('Unauthorized');
     }
 
-    formRef.current?.reset();
+    const title = formData.get('audio-title') as string;
+    const audio = formData.get('audio') as File;
+
+    if (!title || !audio) {
+      return;
+    }
+
+    const uniqueID = uniqueId();
+
+    const { data: audioData, error: audioError } = await supabase.storage
+
+      .from('audio')
+      .upload(`audio-${title}-${uniqueID}`, audio, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (audioError) {
+      throw new Error('Failed to upload audio');
+    }
+
+    uploadToSupabaseAndPostgres({
+      data: {
+        audioPath: audioData?.path as string,
+        title,
+        cardId: id as string,
+        boardId: params.boardId as string,
+        orgId,
+      },
+    });
+
+    onClose();
   };
 
   return (

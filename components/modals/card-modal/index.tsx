@@ -2,36 +2,52 @@
 
 import { useQuery } from '@tanstack/react-query';
 
+import { Actions } from './actions';
+import { getAudioData } from '@/lib/get-audio-data';
+import { AuditLog } from '@prisma/client';
+import { CardWithList } from '@/types';
+import { checkSubscription } from '@/lib/subscription';
 import { useCardModal } from '@/hooks/use-card-modal';
 import { fetcher } from '@/lib/fetcher';
+import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
+import { useEffect, useState } from 'react';
+import { useProModal } from '@/hooks/use-pro-modal';
 
 import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { CardWithList } from '@/types';
 import { Header } from './header';
 import { Description } from './description';
-import { Actions } from './actions';
-import { AuditLog } from '@prisma/client';
 import { Activity } from './activity';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import { checkSubscription } from '@/lib/subscription';
-import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
-import { useProModal } from '@/hooks/use-pro-modal';
+import { AudioPlayer } from './audio';
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
-  const isOpen = useCardModal((state) => state.isOpen);
-  const onClose = useCardModal((state) => state.onClose);
-  const [isPro, setIsPro] = useState(false);
-  const addAudioModal = useAddAudioModal();
-  const proModal = useProModal();
+  const [audioData, setAudioData] = useState({
+    url: '',
+    title: '',
+  });
 
   useEffect(() => {
     const checkPro = async () => {
       setIsPro(await checkSubscription());
     };
+    const getAndSetAudioData = async () => {
+      const audioDataFromDB = await getAudioData(id as string);
+
+      setAudioData({
+        url: audioDataFromDB.url.data.publicUrl,
+        title: audioDataFromDB.title,
+      });
+    };
     checkPro();
-  }, []);
+    getAndSetAudioData();
+  }, [id]);
+
+  const isOpen = useCardModal((state) => state.isOpen);
+  const onClose = useCardModal((state) => state.onClose);
+  const [isPro, setIsPro] = useState(false);
+  const addAudioModal = useAddAudioModal();
+  const proModal = useProModal();
 
   const { data: cardData } = useQuery<CardWithList>({
     queryKey: ['card', id],
@@ -76,6 +92,11 @@ export const CardModal = () => {
               </Button>
             )}
           </div>
+          {audioData && audioData.url && audioData.title && (
+            <AudioPlayer
+              audioData={audioData as { url: string; title: string }}
+            />
+          )}
         </div>
       </DialogContent>
     </Dialog>
