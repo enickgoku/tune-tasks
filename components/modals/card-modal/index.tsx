@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { checkSubscription } from '@/lib/subscription';
 import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
+import { useProModal } from '@/hooks/use-pro-modal';
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
@@ -23,6 +24,7 @@ export const CardModal = () => {
   const onClose = useCardModal((state) => state.onClose);
   const [isPro, setIsPro] = useState(false);
   const addAudioModal = useAddAudioModal();
+  const proModal = useProModal();
 
   useEffect(() => {
     const checkPro = async () => {
@@ -69,7 +71,9 @@ export const CardModal = () => {
                 Add Audio To This Card!
               </Button>
             ) : (
-              <Button>Upgrade to Pro to add audio to this card!</Button>
+              <Button onClick={() => proModal.onOpen}>
+                Upgrade to Pro to add audio to this card!
+              </Button>
             )}
           </div>
         </div>

@@ -16,6 +16,10 @@ export const generateLogMessage = (log: AuditLog, users: LogUserData[]) => {
       return `Deleted ${entityType.toLowerCase()} "${entityTitle}"`;
     case ACTION.ASSIGN:
       return `${delegator?.firstName} assigned ${assignedUser?.firstName} to this card.`;
+    case ACTION.UPLOAD_AUDIO:
+      return `${
+        delegator?.firstName
+      } Uploaded audio to ${entityType.toLowerCase()} "${entityTitle}"`;
     default:
       return `Performed an action on ${entityType.toLowerCase()} "${entityTitle}"`;
   }

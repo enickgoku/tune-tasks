@@ -73,6 +73,7 @@ enum ACTION {
   UPDATE
   DELETE
   ASSIGN
+  UPLOAD_AUDIO
 }
 
 enum ENTITY_TYPE {
@@ -115,4 +116,16 @@ model OrgSubscription {
   stripeSubscriptionId String? @unique @map(name: "stripe_subscription_id")
   stripePriceId String? @map(name: "stripe_price_id")
   stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
+
+// Audio
+
+model Audio {
+  id        String   @id @default(uuid())
+  orgId     String
+  title     String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cardId    String  
 }
