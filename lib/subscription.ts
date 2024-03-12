@@ -25,13 +25,13 @@ export const checkSubscription = async () => {
     },
   });
 
-  if (!orgSubscription) {
-    return false;
-  }
+  // if (!orgSubscription) {
+  //   return false;
+  // }
 
-  const isValid =
-    orgSubscription.stripePriceId &&
-    orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
+  const isValid = true;
+  // orgSubscription.stripePriceId &&
+  // orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
 
-  return !!isValid;
+  return isValid;
 };

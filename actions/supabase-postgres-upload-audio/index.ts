@@ -13,6 +13,7 @@ interface InputType {
   cardId: string;
   boardId: string;
   orgId: string;
+  audioId: string;
 }
 
 type ReturnType = ActionState<InputType, Audio>;
@@ -27,7 +28,7 @@ export const uploadToSupabaseAndPostgres = async ({
     throw new Error('Unauthorized');
   }
 
-  const { audioPath, title, cardId, boardId, orgId } = data;
+  const { audioPath, title, cardId, boardId, orgId, audioId } = data;
 
   let createAudioInformation;
 
@@ -38,6 +39,7 @@ export const uploadToSupabaseAndPostgres = async ({
         url: audioPath,
         cardId,
         orgId,
+        audioId,
       },
     });
 

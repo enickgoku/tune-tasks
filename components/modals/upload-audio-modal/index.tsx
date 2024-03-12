@@ -5,6 +5,8 @@ import { FormSubmit } from '@/components/form/form-submit';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
+import { useAudio } from '@/components/providers/audio-provider';
+import { useCardModal } from '@/hooks/use-card-modal';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { ElementRef, useRef } from 'react';
@@ -15,10 +17,12 @@ import { uniqueId } from 'lodash';
 import { supabase } from '@/lib/supabase';
 
 export const UploadCardModal = () => {
+  const cardModal = useCardModal();
   const id = useAddAudioModal((state) => state.id);
   const isOpen = useAddAudioModal((state) => state.isOpen);
   const onClose = useAddAudioModal((state) => state.onClose);
   const { orgId } = useAuth();
+  const { setAudioId } = useAudio();
 
   const params = useParams();
   const audioInputRef = useRef<ElementRef<'input'>>(null);
@@ -37,12 +41,11 @@ export const UploadCardModal = () => {
       return;
     }
 
-    const uniqueID = uniqueId();
+    const audioId = uniqueId('audio-');
 
     const { data: audioData, error: audioError } = await supabase.storage
-
       .from('audio')
-      .upload(`audio-${title}-${uniqueID}`, audio, {
+      .upload(`audio-${audioId}`, audio, {
         cacheControl: '3600',
         upsert: false,
       });
@@ -53,15 +56,19 @@ export const UploadCardModal = () => {
 
     uploadToSupabaseAndPostgres({
       data: {
-        audioPath: audioData?.path as string,
-        title,
+        audioPath: audioData.path as string,
+        title: title,
         cardId: id as string,
         boardId: params.boardId as string,
-        orgId,
+        orgId: orgId,
+        audioId: audioId,
       },
     });
 
+    setAudioId(audioId);
+
     onClose();
+    cardModal.onClose();
   };
 
   return (

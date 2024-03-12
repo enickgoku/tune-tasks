@@ -128,4 +128,5 @@ model Audio {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cardId    String   
+  audioId   String
 }

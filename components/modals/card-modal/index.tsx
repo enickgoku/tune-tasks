@@ -19,6 +19,7 @@ import { Description } from './description';
 import { Activity } from './activity';
 import { Button } from '@/components/ui/button';
 import { AudioPlayer } from './audio';
+import { useAudio } from '@/components/providers/audio-provider';
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
@@ -27,12 +28,14 @@ export const CardModal = () => {
     title: '',
   });
 
+  const { audioId } = useAudio();
+
   useEffect(() => {
     const checkPro = async () => {
       setIsPro(await checkSubscription());
     };
     const getAndSetAudioData = async () => {
-      const audioDataFromDB = await getAudioData(id as string);
+      const audioDataFromDB = await getAudioData(audioId, id as string);
 
       setAudioData({
         url: audioDataFromDB.url.data.publicUrl,
@@ -41,7 +44,7 @@ export const CardModal = () => {
     };
     checkPro();
     getAndSetAudioData();
-  }, [id]);
+  }, [audioId, id]);
 
   const isOpen = useCardModal((state) => state.isOpen);
   const onClose = useCardModal((state) => state.onClose);
@@ -92,7 +95,7 @@ export const CardModal = () => {
               </Button>
             )}
           </div>
-          {audioData && audioData.url && audioData.title && (
+          {audioData && (
             <AudioPlayer
               audioData={audioData as { url: string; title: string }}
             />

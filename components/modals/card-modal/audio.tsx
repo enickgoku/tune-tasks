@@ -24,7 +24,7 @@ export const AudioPlayer = ({ audioData }: AudioPlayerProps) => {
           ref={audioPlayerRef}
           id="audioPlayer"
           controls
-          src={audioData?.url}
+          src={audioData.url}
         ></audio>
       </div>
     </div>
