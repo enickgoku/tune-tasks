@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { Actions } from './actions';
+import { Assignment } from './assignment';
 import { getAudioData } from '@/lib/get-audio-data';
 import { AuditLog } from '@prisma/client';
 import { CardWithList } from '@/types';
@@ -64,7 +65,7 @@ export const CardModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="h-full overflow-scroll">
         {!cardData ? <Header.Skeleton /> : <Header cardData={cardData} />}
         <div className="grid sm:grid-cols-1 md:grid-cols-1 gap-x-4">
           <div className="col-span-1">
@@ -74,6 +75,7 @@ export const CardModal = () => {
               ) : (
                 <Description card={cardData} />
               )}
+              {cardData && <Assignment cardId={id as string} />}
               {!auditLogData ? (
                 <Activity.Skeleton />
               ) : (

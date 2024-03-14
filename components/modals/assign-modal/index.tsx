@@ -40,6 +40,9 @@ export const AssignCardModal = () => {
       queryClient.invalidateQueries({
         queryKey: ['card-logs', data.cardId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['cardAssignments', data.cardId],
+      });
     },
     onError: (error) => {
       toast.error(error);
