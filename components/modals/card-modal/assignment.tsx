@@ -6,9 +6,8 @@ interface AssignmentProps {
 
 import { UserRound } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { CardAssignments } from '@/types';
 import { fetcher } from '@/lib/fetcher';
-import { useOrganization } from '@clerk/nextjs';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type AssignmentData = {
   name: string;
@@ -19,6 +18,10 @@ export const Assignment = ({ cardId: id }: AssignmentProps) => {
     queryKey: ['cardAssignments', id],
     queryFn: () => fetcher(`/api/cards/${id}/assignments`),
   });
+
+  if (!assignmentUserData) {
+    return <Assignment.Skeleton />;
+  }
 
   return (
     <div className="flex items-start flex-col w-full">
@@ -33,6 +36,16 @@ export const Assignment = ({ cardId: id }: AssignmentProps) => {
           );
         })}
       </div>
+    </div>
+  );
+};
+
+Assignment.Skeleton = function AssignmentSkeleton() {
+  return (
+    <div className="space-y-2 mt-2">
+      <Skeleton className="w-20 h-4 bg-neutral-200" />
+      <Skeleton className="w-full h-8 bg-neutral-200" />
+      <Skeleton className="w-full h-8 bg-neutral-200" />
     </div>
   );
 };
