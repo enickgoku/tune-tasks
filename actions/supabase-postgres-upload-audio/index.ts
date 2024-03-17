@@ -52,7 +52,7 @@ export const uploadToSupabaseAndPostgres = async ({
         id: cardId,
       },
       data: {
-        audioId: createAudioInformation.id,
+        audioId: createAudioInformation.audioId,
       },
     });
 

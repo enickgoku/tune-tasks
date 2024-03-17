@@ -50,7 +50,7 @@ export const UploadCardModal = () => {
       .from('audio')
       .upload(`audio-${audioId}`, audio, {
         cacheControl: '3600',
-        upsert: false,
+        upsert: true,
       });
 
     if (audioError) {

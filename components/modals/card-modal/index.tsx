@@ -37,7 +37,9 @@ export const CardModal = () => {
     };
     const getAndSetAudioData = async () => {
       const audioDataFromDB = await getAudioData(audioId, id as string);
-
+      if (!audioId || !id) {
+        return;
+      }
       setAudioData({
         url: audioDataFromDB.url.data.publicUrl,
         title: audioDataFromDB.title,
