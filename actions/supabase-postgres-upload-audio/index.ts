@@ -47,6 +47,15 @@ export const uploadToSupabaseAndPostgres = async ({
       throw new Error('Failed to create audio');
     }
 
+    await db.card.update({
+      where: {
+        id: cardId,
+      },
+      data: {
+        audioId: createAudioInformation.id,
+      },
+    });
+
     const cardForUpdate = await db.card.findUnique({
       where: {
         id: cardId,

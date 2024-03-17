@@ -43,6 +43,9 @@ export const UploadCardModal = () => {
 
     const audioId = uniqueId('audio-');
 
+    // TODO: if not storage bucket, create then upload.
+    // IF storage bucket, upload directly.
+
     const { data: audioData, error: audioError } = await supabase.storage
       .from('audio')
       .upload(`audio-${audioId}`, audio, {
@@ -51,7 +54,7 @@ export const UploadCardModal = () => {
       });
 
     if (audioError) {
-      throw new Error('Failed to upload audio');
+      throw new Error('Failed to upload audio', audioError);
     }
 
     uploadToSupabaseAndPostgres({
