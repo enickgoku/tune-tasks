@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Actions } from './actions';
 import { Assignment } from './assignment';
-import { getAudioData } from '@/lib/get-audio-data';
 import { AuditLog } from '@prisma/client';
 import { CardWithList } from '@/types';
 import { checkSubscription } from '@/lib/subscription';
@@ -20,34 +19,17 @@ import { Description } from './description';
 import { Activity } from './activity';
 import { Button } from '@/components/ui/button';
 import { AudioPlayer } from './audio';
-import { useAudio } from '@/components/providers/audio-provider';
 
 export const CardModal = () => {
   const id = useCardModal((state) => state.id);
-  const [audioData, setAudioData] = useState({
-    url: '',
-    title: '',
-  });
-
-  const { audioId } = useAudio();
+  const audioId = useCardModal((state) => state.audioId);
 
   useEffect(() => {
     const checkPro = async () => {
       setIsPro(await checkSubscription());
     };
-    const getAndSetAudioData = async () => {
-      const audioDataFromDB = await getAudioData(audioId, id as string);
-      if (!audioId || !id) {
-        return;
-      }
-      setAudioData({
-        url: audioDataFromDB.url.data.publicUrl,
-        title: audioDataFromDB.title,
-      });
-    };
     checkPro();
-    getAndSetAudioData();
-  }, [audioId, id]);
+  }, [id]);
 
   const isOpen = useCardModal((state) => state.isOpen);
   const onClose = useCardModal((state) => state.onClose);
@@ -63,6 +45,11 @@ export const CardModal = () => {
   const { data: auditLogData } = useQuery<AuditLog[]>({
     queryKey: ['card-logs', id],
     queryFn: () => fetcher(`/api/cards/${id}/logs`),
+  });
+
+  const { data: audioData } = useQuery<{ url: string; title: string }>({
+    queryKey: ['audio', audioId],
+    queryFn: () => fetcher(`/api/cards/${id}/audio`),
   });
 
   return (
@@ -99,11 +86,7 @@ export const CardModal = () => {
               </Button>
             )}
           </div>
-          {audioData && (
-            <AudioPlayer
-              audioData={audioData as { url: string; title: string }}
-            />
-          )}
+          {audioData && <AudioPlayer audioData={audioData} />}
         </div>
       </DialogContent>
     </Dialog>

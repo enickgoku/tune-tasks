@@ -4,7 +4,7 @@ import { db } from './db';
 import { supabase } from './supabase';
 
 export const getAudioData = async (audioId: string, id: string) => {
-  const cardWithAudioId = await db.card.findFirst({
+  const cardWithAudioId = await db.card.findUnique({
     where: {
       id: id,
       audioId: audioId,
@@ -28,7 +28,9 @@ export const getAudioData = async (audioId: string, id: string) => {
     throw new Error('Audio not found');
   }
 
-  const audioPublicURL = supabase.storage.from('audio').getPublicUrl(audio.url);
+  const { data: audioPublicURL } = supabase.storage
+    .from('audio')
+    .getPublicUrl(audio.url);
 
-  return { url: audioPublicURL, title: audio.title };
+  return { url: audioPublicURL.publicUrl, title: audio.title };
 };

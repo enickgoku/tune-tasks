@@ -5,7 +5,6 @@ import { FormSubmit } from '@/components/form/form-submit';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 import { useAddAudioModal } from '@/hooks/use-add-audio-modal';
-import { useAudio } from '@/components/providers/audio-provider';
 import { useCardModal } from '@/hooks/use-card-modal';
 import { useParams } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
@@ -13,16 +12,17 @@ import { ElementRef, useRef } from 'react';
 
 import { toast } from 'sonner';
 import { uploadToSupabaseAndPostgres } from '@/actions/supabase-postgres-upload-audio';
-import { uniqueId } from 'lodash';
 import { supabase } from '@/lib/supabase';
+import { v4 as uuidv4 } from 'uuid';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const UploadCardModal = () => {
   const cardModal = useCardModal();
-  const id = useAddAudioModal((state) => state.id);
+  const id = useCardModal((state) => state.id);
   const isOpen = useAddAudioModal((state) => state.isOpen);
   const onClose = useAddAudioModal((state) => state.onClose);
+  const queryClient = useQueryClient();
   const { orgId } = useAuth();
-  const { setAudioId } = useAudio();
 
   const params = useParams();
   const audioInputRef = useRef<ElementRef<'input'>>(null);
@@ -41,9 +41,9 @@ export const UploadCardModal = () => {
       return;
     }
 
-    const audioId = uniqueId('audio-');
+    const audioId = uuidv4();
 
-    // TODO: if not storage bucket, create then upload.
+    // TODO: if no storage bucket, create then upload.
     // IF storage bucket, upload directly.
 
     const { data: audioData, error: audioError } = await supabase.storage
@@ -57,7 +57,7 @@ export const UploadCardModal = () => {
       throw new Error('Failed to upload audio', audioError);
     }
 
-    uploadToSupabaseAndPostgres({
+    const uploadedData = await uploadToSupabaseAndPostgres({
       data: {
         audioPath: audioData.path as string,
         title: title,
@@ -68,7 +68,11 @@ export const UploadCardModal = () => {
       },
     });
 
-    setAudioId(audioId);
+    cardModal.setAudioId(uploadedData.data?.audioId as string);
+
+    await queryClient.invalidateQueries({
+      queryKey: ['audio', audioId],
+    });
 
     onClose();
     cardModal.onClose();
