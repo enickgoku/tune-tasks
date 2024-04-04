@@ -50,6 +50,7 @@ export const CardModal = () => {
   const { data: audioData } = useQuery<{ url: string; title: string }>({
     queryKey: ['audio', audioId],
     queryFn: () => fetcher(`/api/cards/${id}/audio`),
+    enabled: !!id,
   });
 
   return (
