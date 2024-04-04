@@ -40,17 +40,19 @@ export const CardModal = () => {
   const { data: cardData } = useQuery<CardWithList>({
     queryKey: ['card', id],
     queryFn: () => fetcher(`/api/cards/${id}`),
+    enabled: isOpen && !!id,
   });
 
   const { data: auditLogData } = useQuery<AuditLog[]>({
     queryKey: ['card-logs', id],
     queryFn: () => fetcher(`/api/cards/${id}/logs`),
+    enabled: isOpen && !!id,
   });
 
   const { data: audioData } = useQuery<{ url: string; title: string }>({
     queryKey: ['audio', audioId],
     queryFn: () => fetcher(`/api/cards/${id}/audio`),
-    enabled: !!id,
+    enabled: isOpen && !!id,
   });
 
   return (

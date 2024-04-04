@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type CardSidebarStore = {
+type CardModalStore = {
   id?: string;
   audioId?: string;
   isOpen: boolean;
@@ -9,10 +9,10 @@ type CardSidebarStore = {
   setAudioId: (audioId: string) => void;
 };
 
-export const useCardModal = create<CardSidebarStore>((set) => ({
+export const useCardModal = create<CardModalStore>((set) => ({
   id: undefined,
   isOpen: false,
   onOpen: (id: string) => set({ isOpen: true, id }),
-  onClose: () => set({ isOpen: false }),
+  onClose: () => set({ isOpen: false, audioId: undefined, id: undefined }),
   setAudioId: (audioId: string) => set({ audioId }),
 }));
