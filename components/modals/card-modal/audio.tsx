@@ -11,6 +11,8 @@ interface AudioPlayerProps {
 export const AudioPlayer = ({ audioData }: AudioPlayerProps) => {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
 
+  if (!audioData.title || !audioData.url) return null;
+
   return (
     <div className="flex items-center flex-col">
       <div className="flex my-4">

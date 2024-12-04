@@ -48,18 +48,19 @@ export const UploadCardModal = () => {
 
     const { data: audioData, error: audioError } = await supabase.storage
       .from('audio')
-      .upload(`audio-${audioId}`, audio, {
+      .upload(`audio/audio-${audioId}`, audio, {
         cacheControl: '3600',
         upsert: true,
+        contentType: 'audio/*',
       });
 
     if (audioError) {
-      throw new Error('Failed to upload audio', audioError);
+      console.error('Failed to upload audio', audioError);
     }
 
     const uploadedData = await uploadToSupabaseAndPostgres({
       data: {
-        audioPath: audioData.path as string,
+        audioPath: audioData?.path as string,
         title: title,
         cardId: id as string,
         boardId: params.boardId as string,

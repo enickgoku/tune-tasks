@@ -89,7 +89,9 @@ export const CardModal = () => {
               </Button>
             )}
           </div>
-          {audioData && <AudioPlayer audioData={audioData} />}
+          {audioData?.title && audioData.url && (
+            <AudioPlayer audioData={audioData} />
+          )}
         </div>
       </DialogContent>
     </Dialog>

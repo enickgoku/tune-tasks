@@ -26,12 +26,12 @@ export const checkSubscription = async () => {
   });
 
   // if (!orgSubscription) {
-  //   return false;
+  //   return true;
   // }
 
   const isValid = true;
   // orgSubscription.stripePriceId &&
-  // orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
+  //   orgSubscription.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
 
   return isValid;
 };
